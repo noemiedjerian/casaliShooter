@@ -15,15 +15,19 @@
 #include "MinGL2/include/mingl/gui/glut_font.h"
 #include "MinGL2/include/mingl/transition/transition_engine.h"
 
-#include "mystruct.h"
+#include "mugstruct.h"
+#include "playersStruct.h"
+#include "enemyStruct.h"
+#include "yaml.h"
 
-void selectTheme(MinGL &, nsGui::Sprite &);
-unsigned chooseTheme(MinGL &, nsGui::Sprite &, unsigned &);
-void menu(MinGL &window, nsGui::Sprite &);
-unsigned entrerMenu(MinGL &, nsGui::Sprite &);
+void credit(MinGL &, nsGui::Sprite &, nsGui::Sprite &);
+void selectTheme(MinGL &, nsGui::Sprite &, std::vector<unsigned>);
+unsigned chooseTheme(MinGL &, nsGui::Sprite &, unsigned &, std::vector<unsigned>);
+void menu(MinGL &window, nsGui::Sprite &, std::vector<unsigned>);
+unsigned entrerMenu(MinGL &, nsGui::Sprite &, std::vector<unsigned>);
 void dessiner(MinGL &, nsGui::Sprite &);
 void choixLightDark (MinGL &, unsigned &,nsGui::Sprite &, nsGui::Sprite &);
 void showScore(MinGL &);
-bool isBetter(const players &, const players &);
+bool isBetter(const playersStruct &, const playersStruct &);
 
 #endif // MENU_H

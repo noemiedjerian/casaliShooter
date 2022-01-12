@@ -1,4 +1,10 @@
-#define FPS_LIMIT 60
+/**
+* @file check.cpp
+* @brief Verification, Permission to shoot
+* @author Gonzales, Djerian, Leydier, Volpei, Dugourd
+* @version 1.0
+* @date 11/01/2022
+*/
 
 #include <iostream>
 #include <fstream>
@@ -14,8 +20,11 @@
 #include "MinGL2/include/mingl/gui/glut_font.h"
 #include "MinGL2/include/mingl/transition/transition_engine.h"
 
-#include "mystruct.h"
+#include "mugstruct.h"
+#include "playersStruct.h"
+#include "enemyStruct.h"
 #include "check.h"
+#include "menu.h"
 
 using namespace std;
 using namespace nsGraphics;
@@ -23,8 +32,13 @@ using namespace nsGui;
 using namespace chrono;
 using namespace nsAudio;
 
-//Verify if an ennmy is still alive
-bool allDead(const enemy & PPs) {
+/** @brief Verify if an ennmy is still alive
+*
+*@param[in] PPs : Correspond to the ennemy (IPPs / JPPs / KPPs / Open / Classroom)
+*@returns bool : All the ennemies are dead or not
+*
+*/
+bool allDead(const enemyStruct & PPs) {
     for (size_t i = 0; i < PPs.state.size(); ++i) {
         //If the ennemy is alive
         if (PPs.state[i] == true) {
@@ -35,13 +49,26 @@ bool allDead(const enemy & PPs) {
     return true;
 }
 
-////Verifies colisions between 2 coordinates
+/** @brief Verifies colisions between 2 coordinates
+*
+*@param[in] firstCorner :
+*@param[in] secondCorner :
+*@param[in] test :
+*@returns bool
+*
+*/
 bool isTouching (const Vec2D firstCorner, const Vec2D secondCorner, const Vec2D test){
     return ((test.getX() <= secondCorner.getX() && test.getY() <= secondCorner.getY()) && (test.getX() >= firstCorner.getX() && test.getY() >= firstCorner.getY()));
 }
 
-////Verifies collisions between 2 sprites
-bool colision(const Vec2D misPos, enemy &vecSprite){
+/** @brief Verifies collisions between 2 sprites
+*
+*@param[in] misPos :
+*@param[in] vecSprite :
+*@returns bool
+*
+*/
+bool colision(const Vec2D misPos, enemyStruct &vecSprite){
     for (size_t i = 0; i < vecSprite.vecSprite.size(); ++i) {
         Vec2D a = vecSprite.vecSprite[i].getPosition();
         int bX = vecSprite.vecSprite[i].getPosition().getX()+55;
@@ -55,9 +82,23 @@ bool colision(const Vec2D misPos, enemy &vecSprite){
     return false;
 }
 
-//allows the mug to fire missiles and check for colision with enemy or window
-bool missile(MinGL &window, Sprite &mug, enemy &IPPs, enemy &KPPs, enemy &JPPs, unsigned &playerLifeUnsigned, bool &firstShootM, bool &isPressed, Vec2D &misPos){
-    if (window.isPressed({'x', false})){
+/** @brief allows the mug to fire missiles and check for colision with enemy or window
+*
+*@param[in] window :
+*@param[in] mug :
+*@param[in] IPPs :
+*@param[in] KPPs :
+*@param[in] JPPs :
+*@param[in] playerLifeUnsigned :
+*@param[in]firstShootM :
+*@param[in] isPressed :
+*@param[in] misPos :
+*@returns bool
+*
+*/
+bool missile(MinGL &window, Sprite &mug, enemyStruct &IPPs, enemyStruct &KPPs, enemyStruct &JPPs,
+             unsigned &playerLifeUnsigned, bool &firstShootM, bool &isPressed, Vec2D &misPos, vector<unsigned> &vecKey){
+    if (window.isPressed({char(vecKey[8]), false})){
         isPressed = true;
     }
     if (isPressed == true){
@@ -85,8 +126,19 @@ bool missile(MinGL &window, Sprite &mug, enemy &IPPs, enemy &KPPs, enemy &JPPs, 
     return false;
 }
 
-//allows the enemy to fire missiles and check for colision with the mug or window
-bool torpedo(mugStruct &mug, enemy &IPPs, bool &firstShootT, Vec2D &torPos){
+/** @brief allows the enemy to fire missiles and check for colision with the mug or window
+*
+*@param[in] mug :
+*@param[in] IPPs :
+*@param[in] firstShootT :
+*@param[in] torPos :
+*@param[in] backgroundNoScreen :
+*@param[in] creditSprite :
+*@param[in] window :
+*@returns bool:
+*
+*/
+bool torpedo(mugStruct &mug, enemyStruct &IPPs, bool &firstShootT, Vec2D &torPos, Sprite &backgroundNoScreen, Sprite &creditSprite, MinGL &window){
 
     srand (time(NULL));
     int n = rand() % IPPs.vecSprite.size();
@@ -116,7 +168,6 @@ bool torpedo(mugStruct &mug, enemy &IPPs, bool &firstShootT, Vec2D &torPos){
             mug.vecMug[mug.index].setPosition({posX,posY});
         }
         else{
-            cout << "1111111111" << endl;
             exit(0);
         }
 
@@ -127,8 +178,19 @@ bool torpedo(mugStruct &mug, enemy &IPPs, bool &firstShootT, Vec2D &torPos){
     return true;
 }
 
-//allows the ovni to fire missiles and check for colision with the mug or window
-bool ovniShoot(mugStruct & mug, enemy & ovni, bool & ovniShootT, Vec2D & posTorOvni) {
+/** @brief allows the ovni to fire missiles and check for colision with the mug or window
+*
+*@param[in] mug : Correspond to the mug and his sprite
+*@param[in] ovni : Correspond to the UFO informations
+*@param[in] ovniShootT : If the UFO is shooting or not
+*@param[in] posTorOvni : Correspond to the current sprite of the torpedo with his coordinates
+*@param[in] backgroundNoScreen :
+*@param[in] creditSprite :
+*@param[in] window :
+*@returns bool : The UFO is shooting
+*
+*/
+bool ovniShoot(mugStruct & mug, enemyStruct & ovni, bool & ovniShootT, Vec2D & posTorOvni, Sprite &backgroundNoScreen, Sprite &creditSprite, MinGL &window) {
     if ((ovniShootT == true) && (ovni.state[0] == true)) {
         Vec2D position = ovni.vecSprite[0].getPosition();
         int ovniX = position.getX();

@@ -1,4 +1,10 @@
-#define FPS_LIMIT 60
+/**
+* @file generate.cpp
+* @brief Generate the sprites in the window
+* @author Gonzales, Djerian, Leydier, Volpei, Dugourd
+* @version 1.0
+* @date 11/01/2022
+*/
 
 #include <iostream>
 #include <fstream>
@@ -22,7 +28,15 @@ using namespace nsGui;
 using namespace chrono;
 using namespace nsAudio;
 
-void generateVecSprite(enemy &IPPs, const int posY, const string pathSprite){
+/** @brief Generate in the window IPPS,JPPS,KPPS
+*
+*@param[in] IPPs :
+*@param[in] posY :
+*@param[in] pathSprite :
+*@returns void
+*
+*/
+void generateVecSprite(enemyStruct &IPPs, const int posY, const string pathSprite){
     // liste de sprite
     for (size_t i = 0; i < 5; ++i) {
         Vec2D ipp;
@@ -34,7 +48,14 @@ void generateVecSprite(enemy &IPPs, const int posY, const string pathSprite){
     }
 }
 
-void generateOPEN(enemy & open, const int posY) {
+/** @brief Generate in the window 'OPEN'
+*
+*@param[in] open : Correspond to open and his informations
+*@param[in] posY : Correspond to a defined position
+*@returns void
+*
+*/
+void generateOPEN(enemyStruct & open, const int posY) {
     //Generate letters one by one
     Vec2D firstO;
     firstO.setX(280);
@@ -65,7 +86,14 @@ void generateOPEN(enemy & open, const int posY) {
     }
 }
 
-void generateCLASSROOM(enemy & classroom, const int posY) {
+/** @brief Generate in the window 'CLASSROOM'
+*
+*@param[in] classroom : Correspond to classroom and his informations
+*@param[in] posY : Correspond to a defined position
+*@returns void
+*
+*/
+void generateCLASSROOM(enemyStruct & classroom, const int posY) {
     //Generate all the letters one by one
 
     //Genretate C
@@ -136,7 +164,14 @@ void generateCLASSROOM(enemy & classroom, const int posY) {
 
 }
 
-void generateOVNI(enemy & ovni, const string pathSprite) {
+/** @brief Generate in the window 'OVNI'
+*
+*@param[in] ovni : Correspond to the UFO and their informations
+*@param[in] posY : Correpsond to a defined position
+*@returns void
+*
+*/
+void generateOVNI(enemyStruct & ovni, const string pathSprite) {
     Vec2D vecOvni;
     vecOvni.setX(rand() % 559 + 50);
     vecOvni.setY(150);
@@ -145,6 +180,12 @@ void generateOVNI(enemy & ovni, const string pathSprite) {
     ovni.state.push_back(true);
 }
 
+/** @brief Generate in the window the mug
+*
+*@param[in] mug :
+*@returns void
+*
+*/
 void generateVecMug(mugStruct &mug){
     Sprite mug3("spritesi2/mug-full-vie.si2");
     Sprite mug2("spritesi2/mug-2-vies.si2");
